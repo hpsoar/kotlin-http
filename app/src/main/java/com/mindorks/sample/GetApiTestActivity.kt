@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import me.chunyu.http.KotHttp
+import me.chunyu.http.ObjectCallback
 import me.chunyu.http.async
 import me.chunyu.http.core.KotCallback
 import me.chunyu.http.core.KotError
@@ -30,7 +31,7 @@ import java.io.Serializable
 
 class GetApiTestActivity : AppCompatActivity() {
 
-    class User(val username: String, val email: String)
+    class User(val username: String, val emailAddress: String)
 
     class Resp(val success: Boolean, val user: User)
 
@@ -66,11 +67,13 @@ class GetApiTestActivity : AppCompatActivity() {
     }
 
     fun getAsJSONArray(view: View) {
-        val u = hashMapOf("username" to "Roger Huang", "email" to "huangpeng@chunyu.me")
+        val u = hashMapOf("username" to "Roger Huang", "email_address" to "huangpeng@chunyu.me")
         val d = hashMapOf("success" to true, "user" to u)
-        val jsonStr = object: JSON<HashMap<String, Serializable>>() {}.toJSONString(d)
+        val jsonStr = JSON.toJSONString(d)
 
-        val user = object: JSON<Resp>() {}.toObject(jsonStr)
+        val type = object : ObjectCallback<Resp>() {}.getType()
+
+        val resp = JSON.toObject<Resp>(jsonStr, type)
 
         print("hello")
     }
