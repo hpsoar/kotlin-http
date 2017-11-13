@@ -16,14 +16,6 @@ interface Parser<in F, out T> {
 
     abstract class Factory {
 
-        open fun responseBodyParser(type: Type): Parser<ResponseBody, *>? {
-            return null
-        }
-
-        open fun requestBodyParser(type: Type): Parser<*, RequestBody>? {
-            return null
-        }
-
         open fun getObject(string: String, type: Type): Any? {
             return null
         }

@@ -14,16 +14,6 @@ import java.util.HashMap
 
 class GsonParserFactory(private val gson: Gson = Gson()) : Parser.Factory() {
 
-    override fun responseBodyParser(type: Type): Parser<ResponseBody, *>? {
-        val typeAdapter: TypeAdapter<*> = gson.getAdapter(TypeToken.get(type))
-        return GsonResponseBodyParser(gson, typeAdapter)
-    }
-
-    override fun requestBodyParser(type: Type): Parser<*, RequestBody>? {
-        val typeAdapter: TypeAdapter<*> = gson.getAdapter(TypeToken.get(type))
-        return GsonRequestBodyParser(gson, typeAdapter)
-    }
-
     override fun getObject(string: String, type: Type): Any? {
         try {
             return gson.fromJson(string, type)

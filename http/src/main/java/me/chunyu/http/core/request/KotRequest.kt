@@ -88,8 +88,7 @@ open class KotRequest(builder: RequestBuilder) {
         }
     }
 
-    // TODO: sync是不是也可以传callback?
-    fun <T> sync(callback: CYCallback): KotResponse {
+    fun sync(callback: CYCallback?): KotResponse {
         val httpClient = currentHttpClient()
         if (httpClient != null) {
             this.callback = callback
@@ -121,7 +120,6 @@ open class KotRequest(builder: RequestBuilder) {
     }
 
     fun deliverResponse(response: KotResponse) {
-        // TODO:
         callback?.onSuccess(response)
         finish()
     }

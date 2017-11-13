@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import me.chunyu.http.KotHttp
+import me.chunyu.http.async
 import me.chunyu.http.core.CYCallback
 import me.chunyu.http.core.KotError
 import me.chunyu.http.core.KotResponse
@@ -40,7 +41,7 @@ class GetApiTestActivity : AppCompatActivity() {
     }
 
     fun getAsString(view: View) {
-        KotHttp.get("https://www.baidu.com/").build().async(object : CYCallback {
+        KotHttp.get("https://www.baidu.com/").async(object : CYCallback {
             override fun onError(error: KotError) {
                 Log.e("hello", error.errorDetail)
                 error.message?.let {

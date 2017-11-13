@@ -68,3 +68,17 @@ class KotUtils private constructor() {
     }
 
 }
+
+fun<T> KotError.Companion.unsupported(t: T) : KotError {
+    val error = KotError()
+    error.errorCode = -1
+    error.errorDetail = "unsupportted response: " + t.toString()
+    return error
+}
+
+inline fun<reified T> KotError.Companion.convertFailure(): KotError {
+    val error = KotError()
+    error.errorCode = -1
+    error.errorDetail = "failed to convert response to:" + T::class
+    return error
+}
