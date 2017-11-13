@@ -16,7 +16,7 @@
 
 package me.chunyu.http.schedular
 
-import me.chunyu.http.core.Priority
+import me.chunyu.http.core.common.Priority
 import java.util.concurrent.FutureTask
 
 /**

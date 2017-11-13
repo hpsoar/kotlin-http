@@ -1,6 +1,6 @@
 package me.chunyu.http.schedular
 
-import me.chunyu.http.core.Priority
+import me.chunyu.http.core.common.Priority
 
 /**
  * Created by Roger Huang on 13/11/2017.

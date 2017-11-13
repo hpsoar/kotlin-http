@@ -1,7 +1,7 @@
 package me.chunyu.http.okhttp
 
-import com.mindorks.kotnetworking.common.KotConstants
-import com.mindorks.kotnetworking.common.Progress
+import me.chunyu.http.core.common.KotConstants
+import me.chunyu.http.core.common.Progress
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.*

@@ -40,7 +40,7 @@ class ResponseProgressBody(private val responseBody: ResponseBody, progressCallb
             override fun read(sink: Buffer, byteCount: Long): Long {
                 val bytesRead = super.read(sink, byteCount)
                 totalBytesRead += if (bytesRead != -1L) bytesRead else 0
-                val progress: Progress = Progress(totalBytesRead, responseBody.contentLength())
+                val progress = Progress(totalBytesRead, responseBody.contentLength())
                 progressHandler?.obtainMessage(KotConstants.UPDATE, progress)?.sendToTarget()
                 return bytesRead
             }

@@ -18,7 +18,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 26
     buildToolsVersion '26.0.2'
 
     defaultConfig {
@@ -48,4 +48,5 @@ dependencies {
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     testCompile "junit:junit:$junitVersion"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile project(path: ':http')
 }

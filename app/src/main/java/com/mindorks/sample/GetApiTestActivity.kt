@@ -18,7 +18,12 @@ package com.mindorks.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
+import me.chunyu.http.KotHttp
+import me.chunyu.http.core.CYCallback
+import me.chunyu.http.core.KotError
+import me.chunyu.http.core.KotResponse
 
 class GetApiTestActivity : AppCompatActivity() {
 
@@ -35,6 +40,22 @@ class GetApiTestActivity : AppCompatActivity() {
     }
 
     fun getAsString(view: View) {
+        KotHttp.get("https://www.baidu.com/").build().async(object : CYCallback {
+            override fun onError(error: KotError) {
+                Log.e("hello", error.errorDetail)
+                error.message?.let {
+                    Log.e("hello", it)
+                }
+            }
+
+            override fun onFinish() {
+                Log.i("world", "finish")
+            }
+
+            override fun onSuccess(response: KotResponse) {
+                Log.i("world2", response.toString())
+            }
+        })
     }
 
     fun getAsJSONArray(view: View) {

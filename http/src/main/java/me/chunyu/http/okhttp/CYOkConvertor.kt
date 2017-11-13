@@ -1,6 +1,5 @@
 package me.chunyu.http.core
 
-import com.mindorks.kotnetworking.request.*
 import okhttp3.Response
 import okio.Okio
 import org.json.JSONArray

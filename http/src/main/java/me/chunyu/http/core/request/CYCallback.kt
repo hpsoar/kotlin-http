@@ -21,7 +21,7 @@ interface CYCallback {
     }
 
     /** 请求失败，响应错误，数据解析错误等，都会回调该方法， UI线程  */
-    fun onError(response: KotError) {
+    fun onError(error: KotError) {
 
     }
 

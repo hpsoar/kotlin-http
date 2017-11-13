@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.widget.Button
 import com.mindorks.sample.util.FilePickUtils
 
 
@@ -41,7 +42,7 @@ class MultiPartApiTestActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_multi_part_api_test)
 
-        val selectImage = findViewById(R.id.select_image_button)
+        val selectImage : Button = findViewById(R.id.select_image_button)
         selectImage.setOnClickListener {
             if (hasReadPermission())
                 pickImage()

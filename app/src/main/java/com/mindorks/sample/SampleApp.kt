@@ -17,6 +17,7 @@
 package com.mindorks.sample
 
 import android.app.Application
+import me.chunyu.http.KotHttp
 
 /**
  * Created by amitshekhar on 30/04/17.
@@ -25,5 +26,7 @@ class SampleApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        KotHttp.initialize()
     }
 }
