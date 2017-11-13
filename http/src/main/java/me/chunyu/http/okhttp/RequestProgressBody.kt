@@ -10,7 +10,7 @@ import java.io.IOException
 /**
  * Created by huangpeng on 12/11/2017.
  */
-class CYRequestProgressBody(private val requestBody: RequestBody, progressCallback: ((bytesUploaded: Long, totalBytes: Long) -> Unit)?) : RequestBody() {
+class RequestProgressBody(private val requestBody: RequestBody, progressCallback: ((bytesUploaded: Long, totalBytes: Long) -> Unit)?) : RequestBody() {
 
     private var bufferedSink: BufferedSink? = null
     private var progressHandler: UploadProgressHandler? = null

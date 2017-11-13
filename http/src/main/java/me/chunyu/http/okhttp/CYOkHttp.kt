@@ -4,6 +4,7 @@ import android.net.TrafficStats
 import me.chunyu.http.core.*
 import me.chunyu.http.core.Request
 import me.chunyu.http.core.common.KotConstants
+import me.chunyu.http.core.common.Method
 import me.chunyu.http.core.common.Progress
 import me.chunyu.http.core.interfaces.HttpClient
 import me.chunyu.http.core.interfaces.RequestExecutorContext
@@ -113,7 +114,7 @@ abstract class CYOKContext(request: Request) : RequestExecutorContext(request) {
         return builder.build()
     }
 
-    fun addHeadersToRequestBuilder(builder: okhttp3.Request.Builder.Builder) {
+    fun addHeadersToRequestBuilder(builder: okhttp3.Request.Builder) {
 
         val requestHeaders = getHeaders()
 
@@ -134,7 +135,7 @@ class CYOKSimpleContext(request: Request) : CYOKContext(request) {
             var okHttpRequest: okhttp3.Request? = null
             var okHttpResponse: Response? = null
 
-            var builder: okhttp3.Request.Builder.Builder = Request.Builder().url(request.getFormattedUrl())
+            var builder = okhttp3.Request.Builder().url(request.getFormattedUrl())
 
             addHeadersToRequestBuilder(builder)
 
@@ -187,7 +188,7 @@ class CYOKDownloadContext(request: Request) : CYOKContext(request) {
         try {
             val okHttpRequest: okhttp3.Request
             val okHttpResponse: Response?
-            var builder = Request.Builder().url(request.getFormattedUrl())
+            var builder = okhttp3.Request.Builder().url(request.getFormattedUrl())
             addHeadersToRequestBuilder(builder)
             builder = builder.get()
 
@@ -232,7 +233,7 @@ class CYOKMultipartContext(request: Request) : CYOKContext(request) {
             val okHttpRequest: okhttp3.Request
             val okHttpResponse: Response?
 
-            var builder = Request.Builder().url(request.getFormattedUrl())
+            var builder = okhttp3.Request.Builder().url(request.getFormattedUrl())
 
             addHeadersToRequestBuilder(builder)
 
@@ -240,7 +241,7 @@ class CYOKMultipartContext(request: Request) : CYOKContext(request) {
 
             val requestBodyLength = requestBody.contentLength()
 
-            builder = builder.post(CYRequestProgressBody(requestBody, {
+            builder = builder.post(RequestProgressBody(requestBody, {
                 bytesUploaded, totalBytes ->
                 request.callbck?.uploadProgress(Progress(bytesUploaded, totalBytes))
             }))
