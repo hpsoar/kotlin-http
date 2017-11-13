@@ -37,7 +37,7 @@ open class KotRequest(builder: RequestBuilder) {
 
     var context: RequestExecutorContext? = null
 
-    private var callback: CYCallback? = null
+    private var callback: KotCallback? = null
 
     init {
         url = builder.url
@@ -74,7 +74,7 @@ open class KotRequest(builder: RequestBuilder) {
         return httpClient ?: KotRequest.httpClient
     }
 
-    fun async(callback: CYCallback) {
+    fun async(callback: KotCallback) {
         this.callback = callback
 
         val httpClient = currentHttpClient()
@@ -82,13 +82,13 @@ open class KotRequest(builder: RequestBuilder) {
 
             context = httpClient.executorContext(this)
 
-            RequestQueue.INSTANCE.addRequest(this)
+            KotRequestQueue.INSTANCE.addRequest(this)
         } else {
             deliverError(noHttpClientError())
         }
     }
 
-    fun sync(callback: CYCallback?): KotResponse {
+    fun sync(callback: KotCallback?): KotResponse {
         val httpClient = currentHttpClient()
         if (httpClient != null) {
             this.callback = callback

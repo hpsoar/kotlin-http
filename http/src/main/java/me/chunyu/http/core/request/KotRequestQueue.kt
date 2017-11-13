@@ -8,16 +8,16 @@ import java.util.concurrent.atomic.AtomicInteger
 /**
  * Created by huangpeng on 12/11/2017.
  */
-class RequestQueue private constructor() {
+class KotRequestQueue private constructor() {
     val sequenceGenerator: AtomicInteger = AtomicInteger()
     var currentRequest: MutableSet<KotRequest> = mutableSetOf()
 
     private object Holder {
-        val INSTANCE = RequestQueue()
+        val INSTANCE = KotRequestQueue()
     }
 
     companion object {
-        val INSTANCE: RequestQueue by lazy { Holder.INSTANCE }
+        val INSTANCE: KotRequestQueue by lazy { Holder.INSTANCE }
     }
 
     fun addRequest(request: KotRequest) {

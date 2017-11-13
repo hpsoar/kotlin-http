@@ -2,14 +2,10 @@ package me.chunyu.http.core
 
 import me.chunyu.http.core.common.Progress
 
-typealias CYResultCallback<T> = (T?, Throwable?) -> Unit
-
-typealias CYProgressCallback = (Long, Long) -> Unit
-
 /**
  * Created by huangpeng on 12/11/2017.
  */
-interface CYCallback {
+interface KotCallback {
 
     /** 请求网络开始前，UI线程  */
     fun onStart(request: KotRequest) {

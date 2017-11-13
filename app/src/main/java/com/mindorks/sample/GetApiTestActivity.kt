@@ -22,11 +22,17 @@ import android.util.Log
 import android.view.View
 import me.chunyu.http.KotHttp
 import me.chunyu.http.async
-import me.chunyu.http.core.CYCallback
+import me.chunyu.http.core.KotCallback
 import me.chunyu.http.core.KotError
 import me.chunyu.http.core.KotResponse
+import me.chunyu.http.okhttp.response.JSON
+import java.io.Serializable
 
 class GetApiTestActivity : AppCompatActivity() {
+
+    class User(val username: String, val email: String)
+
+    class Resp(val success: Boolean, val user: User)
 
     companion object {
 
@@ -41,7 +47,7 @@ class GetApiTestActivity : AppCompatActivity() {
     }
 
     fun getAsString(view: View) {
-        KotHttp.get("https://www.baidu.com/").async(object : CYCallback {
+        KotHttp.get("https://www.baidu.com/").async(object : KotCallback {
             override fun onError(error: KotError) {
                 Log.e("hello", error.errorDetail)
                 error.message?.let {
@@ -60,6 +66,13 @@ class GetApiTestActivity : AppCompatActivity() {
     }
 
     fun getAsJSONArray(view: View) {
+        val u = hashMapOf("username" to "Roger Huang", "email" to "huangpeng@chunyu.me")
+        val d = hashMapOf("success" to true, "user" to u)
+        val jsonStr = object: JSON<HashMap<String, Serializable>>() {}.toJSONString(d)
+
+        val user = object: JSON<Resp>() {}.toObject(jsonStr)
+
+        print("hello")
     }
 
     fun getAsJSONObject(view: View) {
