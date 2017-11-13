@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 class RequestQueue private constructor() {
     val sequenceGenerator: AtomicInteger = AtomicInteger()
-    var currentRequest: MutableSet<Request> = mutableSetOf()
+    var currentRequest: MutableSet<KotRequest> = mutableSetOf()
 
     private object Holder {
         val INSTANCE = RequestQueue()
@@ -20,7 +20,7 @@ class RequestQueue private constructor() {
         val INSTANCE: RequestQueue by lazy { Holder.INSTANCE }
     }
 
-    fun addRequest(request: Request) {
+    fun addRequest(request: KotRequest) {
         synchronized(currentRequest) {
             try {
                 currentRequest.add(request)
@@ -60,7 +60,7 @@ class RequestQueue private constructor() {
     fun cancelRequestWithGivenTag(@NotNull tag: Any, forceCancel: Boolean) {
         synchronized(currentRequest) {
             cancel(object : RequestFilter {
-                override fun apply(request: Request): Boolean {
+                override fun apply(request: KotRequest): Boolean {
                     if (tag is String && request.tag is String) {
                         return tag == request.tag
                     } else {
@@ -73,7 +73,7 @@ class RequestQueue private constructor() {
 
     fun cancel(requestFilter: RequestFilter, forceCancel: Boolean) {
         synchronized(currentRequest) {
-            val iterator: MutableIterator<Request> = currentRequest.iterator()
+            val iterator: MutableIterator<KotRequest> = currentRequest.iterator()
             while (iterator.hasNext()) {
                 with(iterator.next() /*KotRequest*/) {
                     if (requestFilter.apply(this /*KotRequest*/)) {
@@ -88,7 +88,7 @@ class RequestQueue private constructor() {
 
     fun cancelAll(forceCancel: Boolean) {
         synchronized(currentRequest) {
-            val iterator: MutableIterator<Request> = currentRequest.iterator()
+            val iterator: MutableIterator<KotRequest> = currentRequest.iterator()
             while (iterator.hasNext()) {
                 with(iterator.next() /*KotRequest*/) {
                     if (cancel(forceCancel)) {
@@ -99,14 +99,14 @@ class RequestQueue private constructor() {
         }
     }
 
-    fun finish(kotRequest: Request) {
+    fun finish(request: KotRequest) {
         synchronized(currentRequest) {
-            currentRequest.remove(kotRequest)
+            currentRequest.remove(request)
         }
     }
 
 
     interface RequestFilter {
-        fun apply(request: Request): Boolean
+        fun apply(request: KotRequest): Boolean
     }
 }

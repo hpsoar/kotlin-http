@@ -6,7 +6,7 @@ import java.io.File
 /**
  * Created by huangpeng on 12/11/2017.
  */
-class MultipartRequest(builder: MultipartRequestBuilder) : PostRequest(builder) {
+class KotMultipartRequest(builder: MultipartRequestBuilder) : KotPostRequest(builder) {
     var multiPartParameterMap : MutableMap<String, String> = mutableMapOf()
     var multiPartFileMap: MutableMap<String, File> = mutableMapOf()
 

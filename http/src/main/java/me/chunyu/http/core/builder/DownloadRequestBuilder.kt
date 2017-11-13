@@ -1,7 +1,7 @@
 package me.chunyu.http.core.builder
 
-import me.chunyu.http.core.DownloadRequest
-import me.chunyu.http.core.Request
+import me.chunyu.http.core.KotDownloadRequest
+import me.chunyu.http.core.KotRequest
 
 /**
  * Created by huangpeng on 12/11/2017.
@@ -14,7 +14,7 @@ class DownloadRequestBuilder(url: String) : GetRequestBuilder(url) {
         return this
     }
 
-    override fun build(): Request {
-        return DownloadRequest(this)
+    override fun build(): KotRequest {
+        return KotDownloadRequest(this)
     }
 }

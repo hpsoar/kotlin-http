@@ -1,6 +1,6 @@
 package me.chunyu.http.core.builder
 
-import me.chunyu.http.core.Request
+import me.chunyu.http.core.KotRequest
 import me.chunyu.http.core.ParseUtil
 import me.chunyu.http.core.common.Priority
 import me.chunyu.http.core.common.Method
@@ -119,7 +119,7 @@ open class RequestBuilder(val url: String, val method: Method) {
         return this
     }
 
-    open fun build(): Request {
-        return Request(this)
+    open fun build(): KotRequest {
+        return KotRequest(this)
     }
 }

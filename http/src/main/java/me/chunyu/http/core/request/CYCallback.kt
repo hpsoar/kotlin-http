@@ -12,12 +12,12 @@ typealias CYProgressCallback = (Long, Long) -> Unit
 interface CYCallback {
 
     /** 请求网络开始前，UI线程  */
-    fun onStart(request: Request) {
+    fun onStart(request: KotRequest) {
 
     }
 
     /** 对返回数据进行操作的回调， UI线程  */
-    fun onSuccess(response: CYResponse) {
+    fun onSuccess(response: KotResponse) {
     }
 
     /** 请求失败，响应错误，数据解析错误等，都会回调该方法， UI线程  */

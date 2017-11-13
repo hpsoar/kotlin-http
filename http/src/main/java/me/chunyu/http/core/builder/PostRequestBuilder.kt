@@ -1,7 +1,7 @@
 package me.chunyu.http.core.builder
 
-import me.chunyu.http.core.PostRequest
-import me.chunyu.http.core.Request
+import me.chunyu.http.core.KotPostRequest
+import me.chunyu.http.core.KotRequest
 import me.chunyu.http.core.ParseUtil
 import me.chunyu.http.core.common.Method
 import org.json.JSONArray
@@ -88,7 +88,7 @@ open class PostRequestBuilder(url: String) : RequestBuilder(url, Method.POST) {
         return this
     }
 
-    override fun build(): Request {
-        return PostRequest(this)
+    override fun build(): KotRequest {
+        return KotPostRequest(this)
     }
 }

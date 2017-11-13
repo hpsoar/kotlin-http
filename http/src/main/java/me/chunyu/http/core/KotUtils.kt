@@ -2,6 +2,8 @@ package me.chunyu.http.core
 
 import me.chunyu.http.core.common.KotConstants
 import me.chunyu.http.schedular.Core
+import okhttp3.Response
+import okio.Okio
 import java.net.URLConnection
 
 /**
@@ -17,8 +19,25 @@ class KotUtils private constructor() {
             return kotError
         }
 
-        fun getErrorForServerResponse(kotError: KotError, kotRequest: Request, code: Int): KotError {
-            val parsedKotError = kotRequest.parseNetworkError(kotError)
+        fun parseNetworkError(kotError: KotError): KotError {
+//            try {
+//                val errorResponse: Response? = kotError.response
+//                kotError.errorBody = errorResponse?.let {
+//                    errorResponse.body()?.let {
+//                        errorResponse.body().source()?.let {
+//                            source ->
+//                            Okio.buffer(source).readUtf8()
+//                        }
+//                    }
+//                }
+//            } catch (ex: Exception) {
+//                ex.printStackTrace()
+//            }
+            return kotError
+        }
+
+        fun getErrorForServerResponse(kotError: KotError, kotRequest: KotRequest, code: Int): KotError {
+            val parsedKotError = parseNetworkError(kotError)
             parsedKotError.errorDetail = KotConstants.RESPONSE_FROM_SERVER_ERROR
             parsedKotError.errorCode = code
             return parsedKotError

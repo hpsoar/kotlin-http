@@ -3,16 +3,16 @@ package me.chunyu.http.core
 import me.chunyu.http.core.builder.RequestBuilder
 import me.chunyu.http.core.common.Method
 import me.chunyu.http.core.common.Priority
+import me.chunyu.http.core.common.Progress
 import me.chunyu.http.core.interfaces.HttpClient
 import me.chunyu.http.core.interfaces.RequestExecutorContext
 import okhttp3.*
-import okio.Okio
 import java.util.concurrent.Executor
 
 /**
  * Created by huangpeng on 12/11/2017.
  */
-open class Request(builder: RequestBuilder) {
+open class KotRequest(builder: RequestBuilder) {
 
     companion object {
         var httpClient: HttpClient? = null
@@ -37,7 +37,7 @@ open class Request(builder: RequestBuilder) {
 
     var context: RequestExecutorContext? = null
 
-    var callbck: CYCallback? = null
+    private var callback: CYCallback? = null
 
     init {
         url = builder.url
@@ -71,11 +71,11 @@ open class Request(builder: RequestBuilder) {
     }
 
     fun currentHttpClient(): HttpClient? {
-        return httpClient ?: Request.httpClient
+        return httpClient ?: KotRequest.httpClient
     }
 
     fun async(callback: CYCallback) {
-        this.callbck = callbck
+        this.callback = callback
 
         val httpClient = currentHttpClient()
         if (httpClient != null) {
@@ -84,66 +84,55 @@ open class Request(builder: RequestBuilder) {
 
             RequestQueue.INSTANCE.addRequest(this)
         } else {
-            deliverErrorResponse(noHttpClientError())
+            deliverError(noHttpClientError())
         }
     }
 
     // TODO: sync是不是也可以传callback?
-    fun <T> sync(callback: CYCallback): CYResponse {
+    fun <T> sync(callback: CYCallback): KotResponse {
         val httpClient = currentHttpClient()
         if (httpClient != null) {
-            this.callbck = callbck
+            this.callback = callback
 
             val context = httpClient.executorContext(this)
 
             this.context = context
 
-            val resp = context.execute()
-
-            return resp
+            return context.execute()
         }
 
-        return CYResponse(noHttpClientError())
-    }
-
-    fun parseNetworkError(kotError: KotError): KotError {
-        try {
-            val errorResponse: Response? = kotError.response
-            kotError.errorBody = errorResponse?.let {
-                errorResponse.body()?.let {
-                    errorResponse.body().source()?.let {
-                        source ->
-                        Okio.buffer(source).readUtf8()
-                    }
-                }
-            }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-        return kotError
+        return KotResponse(noHttpClientError())
     }
 
     fun noHttpClientError(): KotError {
         val error = KotError()
         error.errorCode = -1
-        error.errorDetail = "httpClient is not set for either Request or current request object"
+        error.errorDetail = "httpClient is not set for either KotRequest or current request object"
 
         return error
     }
 
-    fun finish() {
-        callbck?.onFinish()
-        callbck = null
+    fun updateUploadProgress(progress: Progress) {
+        callback?.uploadProgress(progress)
     }
 
-    fun deliverResponse(response: CYResponse) {
+    fun updateDownloadProgress(progress: Progress) {
+        callback?.downloadProgress(progress)
+    }
+
+    fun deliverResponse(response: KotResponse) {
         // TODO:
-        callbck?.onSuccess(response)
+        callback?.onSuccess(response)
         finish()
     }
 
-    fun deliverErrorResponse(error: KotError) {
-        callbck?.onError(error)
+    fun deliverError(error: KotError) {
+        callback?.onError(error)
         finish()
+    }
+
+    fun finish() {
+        callback?.onFinish()
+        callback = null
     }
 }

@@ -1,7 +1,7 @@
 package me.chunyu.http.core.builder
 
-import me.chunyu.http.core.MultipartRequest
-import me.chunyu.http.core.Request
+import me.chunyu.http.core.KotMultipartRequest
+import me.chunyu.http.core.KotRequest
 import me.chunyu.http.core.ParseUtil
 import java.io.File
 
@@ -47,7 +47,7 @@ class MultipartRequestBuilder(url: String) : PostRequestBuilder(url) {
         return this
     }
 
-    override fun build(): Request {
-        return MultipartRequest(this)
+    override fun build(): KotRequest {
+        return KotMultipartRequest(this)
     }
 }

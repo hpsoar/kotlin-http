@@ -1,6 +1,6 @@
 package me.chunyu.http.core.interfaces
 
-import me.chunyu.http.core.Request
+import me.chunyu.http.core.KotRequest
 
 /**
  * Created by Roger Huang on 13/11/2017.
@@ -8,5 +8,5 @@ import me.chunyu.http.core.Request
  */
 
 interface HttpClient {
-    fun executorContext(request: Request): RequestExecutorContext
+    fun executorContext(request: KotRequest): RequestExecutorContext
 }

@@ -6,7 +6,7 @@ import java.io.File
 /**
  * Created by huangpeng on 12/11/2017.
  */
-open class PostRequest(builder: PostRequestBuilder) : Request(builder) {
+open class KotPostRequest(builder: PostRequestBuilder) : KotRequest(builder) {
     var bodyParameterMap: MutableMap<String, String> = mutableMapOf()
     var urlEncodedFormBodyParameterMap: MutableMap<String, String> = mutableMapOf()
     var file: File? = null
