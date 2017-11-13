@@ -36,8 +36,6 @@ dependencies {
 
     compile "com.squareup.okhttp3:okhttp:$okhttpVersion"
     compile "com.google.code.gson:gson:$gsonVersion"
-    compile project(path: ':kotin-networking')
-    compile project(path: ':kotin-networking')
 }
 repositories {
     mavenCentral()
