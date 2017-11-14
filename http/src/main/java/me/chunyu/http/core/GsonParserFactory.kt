@@ -1,4 +1,4 @@
-package me.chunyu.http.okhttp
+package me.chunyu.http.core
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

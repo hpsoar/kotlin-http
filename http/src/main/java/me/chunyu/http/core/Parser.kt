@@ -1,4 +1,4 @@
-package me.chunyu.http.okhttp
+package me.chunyu.http.core
 
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
