@@ -1,6 +1,5 @@
 package me.chunyu.http.okhttp.response
 
-import me.chunyu.http.core.KotConvertor
 import me.chunyu.http.core.KotError
 import me.chunyu.http.core.KotResponse
 import me.chunyu.http.core.request.TResponse
@@ -11,7 +10,7 @@ import okhttp3.Response
 /**
  * Created by huangpeng on 12/11/2017.
  */
-open class ResponseConvertor : KotConvertor<Response> {
+open class ResponseConvertor {
     override fun convertResponse(response: KotResponse): TResponse<Response> {
         if (response is CYOKResponse) {
             if (response.okHttpResponse != null) {

@@ -1,6 +1,5 @@
 package me.chunyu.http.core
 
-import me.chunyu.http.core.interfaces.KotConvertorFactory
 import me.chunyu.http.core.request.TResponse
 
 /**
