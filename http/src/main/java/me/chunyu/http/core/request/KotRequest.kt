@@ -7,6 +7,8 @@ import me.chunyu.http.core.common.Progress
 import me.chunyu.http.core.interfaces.HttpClient
 import me.chunyu.http.core.interfaces.KotConvertorFactory
 import me.chunyu.http.core.interfaces.RequestExecutorContext
+import me.chunyu.http.core.request.TCallback
+import me.chunyu.http.core.request.TResponse
 import okhttp3.*
 import java.util.concurrent.Executor
 
@@ -75,7 +77,7 @@ open class KotRequest(builder: RequestBuilder) {
         return httpClient ?: KotRequest.httpClient
     }
 
-    fun async(callback: KotCallback) {
+    fun async(callback: KotCallback?) {
         this.callback = callback
 
         val httpClient = currentHttpClient()
@@ -102,6 +104,47 @@ open class KotRequest(builder: RequestBuilder) {
         }
 
         return KotResponse(noHttpClientError())
+    }
+
+    fun<T> sync(callback: TCallback<T>) : TResponse<T> {
+
+        val response = sync(wrapTCallback(callback))
+
+        return convertResponse(response, callback)
+    }
+
+    fun<T> async(callback: TCallback<T>) {
+        async(wrapTCallback(callback))
+    }
+
+    fun<T> wrapTCallback(callback: TCallback<T>): KotCallback {
+        return object : KotCallback {
+            override fun onSuccess(response: KotResponse) {
+                val resp = convertResponse(response, callback)
+                callback.onCallback(resp)
+            }
+
+            override fun onError(error: KotError) {
+                callback.onCallback(TResponse(null, error))
+            }
+
+            override fun uploadProgress(progress: Progress) {
+                callback.onProgress(progress)
+            }
+
+            override fun downloadProgress(progress: Progress) {
+                callback.onProgress(progress)
+            }
+        }
+    }
+
+    fun<T> convertResponse(response: KotResponse, callback: TCallback<T>) : TResponse<T> {
+        // TODO: safty guard here
+        val convertor = KotResponse.responseFactory!!.objectCovertor<T>(callback.getType())
+
+        val resp = convertor.convertResponse(response)
+
+        return resp
     }
 
     fun noHttpClientError(): KotError {
