@@ -11,7 +11,7 @@ import okhttp3.Headers
  *
  */
 
-abstract class CYOKContext(request: KotRequest) : RequestExecutorContext(request) {
+abstract class OKContext(request: KotRequest) : RequestExecutorContext(request) {
     var call: Call? = null
 
     override fun cancel(forceCancel: Boolean): Boolean {
@@ -34,7 +34,7 @@ abstract class CYOKContext(request: KotRequest) : RequestExecutorContext(request
 
         builder.headers(requestHeaders)
 
-        request.userAgent = request.userAgent ?: CYOkHttp.userAgent
+        request.userAgent = request.userAgent ?: OkHttp.userAgent
 
         if (request.userAgent != null && !requestHeaders.names().contains(KotConstants.USER_AGENT)) {
             builder.addHeader(KotConstants.USER_AGENT, request.userAgent)

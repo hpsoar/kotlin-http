@@ -3,7 +3,7 @@ package me.chunyu.http
 import me.chunyu.http.core.KotRequest
 import me.chunyu.http.core.KotResponse
 import me.chunyu.http.core.builder.GetRequestBuilder
-import me.chunyu.http.okhttp.CYOkHttp
+import me.chunyu.http.okhttp.OkHttp
 import me.chunyu.http.okhttp.response.KotOkConvertorFactory
 
 /**
@@ -13,7 +13,7 @@ class KotHttp {
     companion object {
         // NOTE: this is the only place that couples with okHttp
         fun initialize() {
-            KotRequest.httpClient = CYOkHttp() // httpClient will delegate real request
+            KotRequest.httpClient = OkHttp() // httpClient will delegate real request
 
             /*
              * convertorFactory is responsible to convert raw response (wrapped in KotResponse) to typed response TResponse<T>

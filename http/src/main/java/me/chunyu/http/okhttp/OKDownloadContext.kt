@@ -12,7 +12,7 @@ import java.io.IOException
  * Created by Roger Huang on 13/11/2017.
  */
 
-class CYOKDownloadContext(request: KotRequest) : CYOKContext(request) {
+class OKDownloadContext(request: KotRequest) : OKContext(request) {
     override fun execute(): KotResponse {
         try {
             var builder = okhttp3.Request.Builder().url(request.getFormattedUrl())
@@ -24,7 +24,7 @@ class CYOKDownloadContext(request: KotRequest) : CYOKContext(request) {
             val okHttpRequest = builder.build()
 
             val okHttpClient =
-                    CYOkHttp.sOkHttpClient.newBuilder().addInterceptor { chain ->
+                    OkHttp.sOkHttpClient.newBuilder().addInterceptor { chain ->
                         val response: Response = chain.proceed(chain.request())
                         response.newBuilder()
                                 .body(ResponseProgressBody(response.body(), {
@@ -46,7 +46,7 @@ class CYOKDownloadContext(request: KotRequest) : CYOKContext(request) {
 
             request.logRequestResult(null, okHttpResponse, startBytes, timeTaken)
 
-            return CYOKResponse(okHttpResponse, null)
+            return OKResponse(okHttpResponse, null)
         } catch (ioe: IOException) {
             throw KotError(ioe)
         }

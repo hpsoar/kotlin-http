@@ -10,7 +10,7 @@ import java.io.IOException
 /**
  * Created by Roger Huang on 13/11/2017.
  */
-class CYOKSimpleContext(request: KotRequest) : CYOKContext(request) {
+class OKSimpleContext(request: KotRequest) : OKContext(request) {
     override fun execute(): KotResponse {
 
         try {
@@ -45,7 +45,7 @@ class CYOKSimpleContext(request: KotRequest) : CYOKContext(request) {
 
             val okHttpRequest = builder.build()
 
-            call = CYOkHttp.sOkHttpClient.newCall(okHttpRequest)
+            call = OkHttp.sOkHttpClient.newCall(okHttpRequest)
 
             val startTime = System.currentTimeMillis()
             val startBytes = TrafficStats.getTotalRxBytes()
@@ -56,7 +56,7 @@ class CYOKSimpleContext(request: KotRequest) : CYOKContext(request) {
 
             request.logRequestResult(requestBody, okHttpResponse, startBytes, timeTaken)
 
-            return CYOKResponse(okHttpResponse, null)
+            return OKResponse(okHttpResponse, null)
         } catch (ioe: IOException) {
             throw KotError(ioe)
         }

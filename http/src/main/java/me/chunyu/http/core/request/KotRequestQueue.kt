@@ -38,14 +38,14 @@ class KotRequestQueue private constructor() {
                     Core.instance
                             .executorSupplier
                             .forImmediateNetworkTasks()
-                            .submit(Runnable(request))
+                            .submit(KotRequestRunnable(request))
                 }
 
                 else -> {
                     Core.instance
                             .executorSupplier
                             .forNetworkTasks()
-                            .submit(Runnable(request))
+                            .submit(KotRequestRunnable(request))
                 }
             }
 

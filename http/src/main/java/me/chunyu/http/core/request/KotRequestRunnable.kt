@@ -6,7 +6,7 @@ import me.chunyu.http.schedular.KotRunnable
 /**
  * Created by huangpeng on 12/11/2017.
  */
-open class Runnable(val request: KotRequest) : KotRunnable {
+open class KotRequestRunnable(val request: KotRequest) : KotRunnable {
 
     override val priority: Priority = request.priority
     override val sequence: Int = request.sequenceNumber

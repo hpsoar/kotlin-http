@@ -6,7 +6,7 @@ import me.chunyu.http.core.KotResponse
 import me.chunyu.http.core.common.KotConstants
 import me.chunyu.http.core.request.TResponse
 import me.chunyu.http.core.unsupported
-import me.chunyu.http.okhttp.CYOKResponse
+import me.chunyu.http.okhttp.OKResponse
 import okhttp3.Response
 import okio.Okio
 
@@ -15,7 +15,7 @@ import okio.Okio
 */
 open class ResponseConvertor : KotConvertor<Response> {
     override fun convertResponse(response: KotResponse): TResponse<Response> {
-        if (response is CYOKResponse) {
+        if (response is OKResponse) {
             return if (response.okHttpResponse != null) {
                 if (response.okHttpResponse.code() < 400) {
                     TResponse(response.okHttpResponse, response)
@@ -33,7 +33,7 @@ open class ResponseConvertor : KotConvertor<Response> {
         }
     }
 
-    private fun parseErrorResponse(response: CYOKResponse): TResponse<Response> {
+    private fun parseErrorResponse(response: OKResponse): TResponse<Response> {
         try {
             val errorResponse = response.okHttpResponse!!
 

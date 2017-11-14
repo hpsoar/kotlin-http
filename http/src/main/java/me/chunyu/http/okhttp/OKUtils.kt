@@ -8,7 +8,7 @@ import java.io.InputStream
 /**
  * Created by Roger Huang on 13/11/2017.
  */
-class okUtils {
+class OKUtils {
     companion object {
         fun saveFile(response: Response?, dirPath: String?, fileName: String?) {
             val inputStream: InputStream? = response?.body()?.byteStream()

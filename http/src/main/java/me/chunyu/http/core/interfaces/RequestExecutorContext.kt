@@ -12,7 +12,7 @@ abstract class RequestExecutorContext(val request: KotRequest) {
     var isCancelled = false
 
     abstract fun execute(): KotResponse
-
+    
     abstract fun cancel(forceCancel: Boolean): Boolean
 }
 

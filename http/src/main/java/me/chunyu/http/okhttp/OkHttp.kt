@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by huangpeng on 12/11/2017.
  */
-class CYOkHttp : KotHttpClient {
+class OkHttp : KotHttpClient {
     companion object {
         // you can customize in your code
         var sOkHttpClient: OkHttpClient = defaultOkHttpClient()
@@ -26,11 +26,11 @@ class CYOkHttp : KotHttpClient {
 
     override fun executorContext(request: KotRequest): RequestExecutorContext {
         if (request as? KotDownloadRequest != null) {
-            return CYOKDownloadContext(request)
+            return OKDownloadContext(request)
         } else if (request as? KotMultipartRequest != null) {
-            return CYOKMultipartContext(request)
+            return OKMultipartContext(request)
         }
-        return CYOKSimpleContext(request)
+        return OKSimpleContext(request)
     }
 }
 
