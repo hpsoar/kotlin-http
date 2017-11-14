@@ -85,6 +85,11 @@ class GetApiTestActivity : AppCompatActivity() {
                 .addQueryParameter("limit", "5")
                 .asyncJson { response ->
                 }
+
+        KotHttp.get(GET_JSON_ARRAY).async(object : TCallback<Resp>() {
+            override fun onCallback(response: TResponse<Resp>) {
+            }
+        })
     }
 
     fun getAsJSONObject(view: View) {
