@@ -1,5 +1,6 @@
 package me.chunyu.http
 
+import com.google.gson.JsonElement
 import me.chunyu.http.core.*
 import me.chunyu.http.core.builder.RequestBuilder
 import me.chunyu.http.core.request.TResponse
@@ -48,6 +49,14 @@ fun<T> RequestBuilder.async(callback: ObjectCallback<T>) {
 
         override fun onError(error: KotError) {
             callback.onCallback(TResponse(null, error))
+        }
+    })
+}
+
+fun RequestBuilder.asyncJson(callback: (TResponse<JsonElement>)->Unit) {
+    async(object : ObjectCallback<JsonElement>() {
+        override fun onCallback(response: TResponse<JsonElement>) {
+            callback(response)
         }
     })
 }

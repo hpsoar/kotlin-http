@@ -21,14 +21,17 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import com.google.gson.JsonElement
+import com.mindorks.sample.ApiEndPoint.Companion.GET_JSON_ARRAY
 import me.chunyu.http.KotHttp
 import me.chunyu.http.ObjectCallback
 import me.chunyu.http.async
+import me.chunyu.http.asyncJson
 import me.chunyu.http.core.KotCallback
 import me.chunyu.http.core.KotError
 import me.chunyu.http.core.KotResponse
 import me.chunyu.http.core.request.TResponse
 import me.chunyu.http.okhttp.response.JSON
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.Serializable
 
@@ -70,15 +73,21 @@ class GetApiTestActivity : AppCompatActivity() {
     }
 
     fun getAsJSONArray(view: View) {
-        val u = hashMapOf("username" to "Roger Huang", "email_address" to "huangpeng@chunyu.me")
-        val d = hashMapOf("success" to true, "user" to u)
-        val jsonStr = JSON.toJSONString(d)
+        //GET_JSON_ARRAY
+        KotHttp.get(GET_JSON_ARRAY)
+                .addPathParameter("pageNumber", "0")
+                .addQueryParameter("limit", "3")
+                .async(object: ObjectCallback<JsonElement>() {
+            override fun onCallback(response: TResponse<JsonElement>) {
+                print("hello")
+            }
+        })
 
-        val type = object : ObjectCallback<Resp>() {}.getType()
-
-        val resp = JSON.toObject<Resp>(jsonStr, type)
-
-        val jsonObject = JSON.toObject<JsonElement>(jsonStr, object : ObjectCallback<JsonElement>(){}.getType())
+        KotHttp.get(GET_JSON_ARRAY)
+                .addPathParameter("pageNumber", "0")
+                .addQueryParameter("limit", "5")
+                .asyncJson { response ->
+                }
     }
 
     fun getAsJSONObject(view: View) {
@@ -89,6 +98,18 @@ class GetApiTestActivity : AppCompatActivity() {
     }
 
     fun downloadImageFile(view: View) {
+    }
+
+    fun test() {
+        val u = hashMapOf("username" to "Roger Huang", "email_address" to "huangpeng@chunyu.me")
+        val d = hashMapOf("success" to true, "user" to u)
+        val jsonStr = JSON.toJSONString(d)
+
+        val type = object : ObjectCallback<Resp>() {}.getType()
+
+        val resp = JSON.toObject<Resp>(jsonStr, type)
+
+        val jsonObject = JSON.toObject<JsonElement>(jsonStr, object : ObjectCallback<JsonElement>(){}.getType())
     }
 
     fun sendAndCancelAll(view: View) {
