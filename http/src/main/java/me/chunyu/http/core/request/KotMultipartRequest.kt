@@ -17,4 +17,8 @@ class KotMultipartRequest(builder: MultipartRequestBuilder) : KotPostRequest(bui
         multiPartParameterMap = builder.mMultiPartParameterMap
         percentageThresholdForCancelling = builder.mPercentageThresholdForCancelling
     }
+
+    override fun canCancel(): Boolean {
+        return percentageThresholdForCancelling == 0 || progress.percentage() < percentageThresholdForCancelling
+    }
 }

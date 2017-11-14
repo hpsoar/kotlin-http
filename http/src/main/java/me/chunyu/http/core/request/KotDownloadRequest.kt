@@ -10,4 +10,8 @@ class KotDownloadRequest(builder: DownloadRequestBuilder) : KotRequest(builder) 
     init {
         percentageThresholdForCancelling = builder.percentageThresholdForCancelling
     }
+
+    override fun canCancel(): Boolean {
+        return percentageThresholdForCancelling == 0 || progress.percentage() < percentageThresholdForCancelling
+    }
 }

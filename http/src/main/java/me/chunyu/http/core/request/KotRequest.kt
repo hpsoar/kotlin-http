@@ -8,12 +8,13 @@ import me.chunyu.http.core.interfaces.KotHttpClient
 import me.chunyu.http.core.interfaces.RequestExecutorContext
 import me.chunyu.http.core.request.TCallback
 import me.chunyu.http.core.request.TResponse
+import me.chunyu.http.schedular.Core
 import okhttp3.*
 import java.util.concurrent.Executor
 
 /**
- * Created by huangpeng on 12/11/2017.
- */
+* Created by Roger Huang on 12/11/2017.
+*/
 open class KotRequest(builder: RequestBuilder) {
 
     companion object {
@@ -41,6 +42,10 @@ open class KotRequest(builder: RequestBuilder) {
 
     private var callback: KotCallback? = null
 
+    protected var progress = Progress(0, 0)
+
+    private var isDelivered = false
+
     init {
         url = builder.url
         method = builder.method
@@ -67,13 +72,13 @@ open class KotRequest(builder: RequestBuilder) {
 
     }
 
-    fun cancel(forceCancel: Boolean): Boolean {
-        context?.cancel(forceCancel)
-        return context?.isCancelled ?: false
+    open fun canCancel(): Boolean {
+        return true
     }
 
-    fun currentHttpClient(): KotHttpClient? {
-        return httpClient ?: KotRequest.httpClient
+    fun cancel(forceCancel: Boolean): Boolean {
+        context?.cancel(forceCancel)
+        return context?.isCancelled ?: true
     }
 
     fun async(callback: KotCallback?) {
@@ -86,10 +91,14 @@ open class KotRequest(builder: RequestBuilder) {
 
             KotRequestQueue.INSTANCE.addRequest(this)
         } else {
-            deliverError(noHttpClientError())
+            deliverError(KotError.noHttpClientError())
         }
     }
 
+    /**
+     * only uploadProgress/downloadProgress/onStart will be called
+     * do not call onSuccess, because the response may be processed twice
+     */
     fun sync(callback: KotCallback?): KotResponse {
         val httpClient = currentHttpClient()
         if (httpClient != null) {
@@ -99,82 +108,104 @@ open class KotRequest(builder: RequestBuilder) {
 
             this.context = context
 
-            return context.execute()
+            val resp = return context.execute()
+
+            runCallback {
+                finish()
+            }
+
+            return resp
         }
 
-        return KotResponse(noHttpClientError())
+        return KotResponse(KotError.noHttpClientError())
     }
 
+    /**
+     * @param callback the callback is mainly used to get the type of template T,
+     *      optionally, you can listen to callbacks, eg. upload/download progress
+     */
     fun<T> sync(callback: TCallback<T>) : TResponse<T> {
 
-        val response = sync(wrapTCallback(callback))
+        val response = sync(callback.wrapInKotCallback())
 
-        return convertResponse(response, callback)
+        return callback.convertResponse(response)
     }
 
+    /**
+     * @param callback with TResponse: parsed object, raw response, and error
+     */
     fun<T> async(callback: TCallback<T>) {
-        async(wrapTCallback(callback))
+        async(callback.wrapInKotCallback())
     }
 
-    fun<T> wrapTCallback(callback: TCallback<T>): KotCallback {
-        return object : KotCallback {
-            override fun onSuccess(response: KotResponse) {
-                val resp = convertResponse(response, callback)
-                callback.onCallback(resp)
-            }
+    // MARK - update progress & deliver result
 
-            override fun onError(error: KotError) {
-                callback.onCallback(TResponse(null, error))
-            }
+    fun getUploadProgressListener(): ((Long, Long) -> Unit)? {
+        return { bytesDownloaded: Long, totalBytes: Long ->
+            context?.let {
+                if (!it.isCancelled) {
+                    progress = Progress(bytesDownloaded, totalBytes)
 
-            override fun uploadProgress(progress: Progress) {
-                callback.onProgress(progress)
-            }
-
-            override fun downloadProgress(progress: Progress) {
-                callback.onProgress(progress)
+                    runCallback {
+                        callback?.uploadProgress(progress)
+                    }
+                }
             }
         }
     }
 
-    fun<T> convertResponse(response: KotResponse, callback: TCallback<T>) : TResponse<T> {
-        val convertor = KotResponse.convertorFactory?.objectCovertor<T>(callback.getType())
+    fun getDownloadProgressListener(): ((Long, Long) -> Unit)? {
+        return { bytesDownloaded: Long, totalBytes: Long ->
+            context?.let {
+                if (!it.isCancelled) {
+                    progress = Progress(bytesDownloaded, totalBytes)
 
-        if (convertor != null) {
-            return convertor.convertResponse(response)
+                    runCallback {
+                        callback?.downloadProgress(progress)
+                    }
+                }
+            }
         }
-
-        return TResponse(response, KotError("please set KotResponse.convertorFactory"))
-    }
-
-    fun noHttpClientError(): KotError {
-        val error = KotError()
-        error.errorCode = -1
-        error.errorDetail = "httpClient is not set for either KotRequest or current request object"
-
-        return error
-    }
-
-    fun updateUploadProgress(progress: Progress) {
-        callback?.uploadProgress(progress)
-    }
-
-    fun updateDownloadProgress(progress: Progress) {
-        callback?.downloadProgress(progress)
     }
 
     fun deliverResponse(response: KotResponse) {
-        callback?.onSuccess(response)
-        finish()
+        runCallback {
+            if (!isDelivered) {
+                callback?.onSuccess(response)
+                finish()
+            }
+        }
     }
 
     fun deliverError(error: KotError) {
-        callback?.onError(error)
-        finish()
+        runCallback {
+            if (!isDelivered) {
+                callback?.onError(error)
+                finish()
+            }
+        }
     }
 
-    fun finish() {
+    private fun finish() {
         callback?.onFinish()
         callback = null
+        isDelivered = true
+    }
+
+    private fun runCallback(block: (Unit) -> Unit) {
+        try {
+            executor?.execute {
+                block(Unit)
+            } ?: Core.instance.executorSupplier.forMainThreadTasks().execute {
+                block(Unit)
+            }
+        }
+        catch (e: Exception) {
+
+        }
+    }
+
+    private fun currentHttpClient(): KotHttpClient? {
+        return httpClient ?: KotRequest.httpClient
     }
 }

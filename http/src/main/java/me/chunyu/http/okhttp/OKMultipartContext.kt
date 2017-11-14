@@ -22,10 +22,7 @@ class OKMultipartContext(request: KotRequest) : OKContext(request) {
 
             val requestBodyLength = requestBody.contentLength()
 
-            builder = builder.post(RequestProgressBody(requestBody, {
-                bytesUploaded, totalBytes ->
-                request.updateUploadProgress(Progress(bytesUploaded, totalBytes))
-            }))
+            builder = builder.post(RequestProgressBody(requestBody, request.getUploadProgressListener()))
 
             request.cacheControl?.let { builder.cacheControl(it) }
 

@@ -1,6 +1,8 @@
 package me.chunyu.http.okhttp
 
+import me.chunyu.http.core.KotError
 import me.chunyu.http.core.KotRequest
+import me.chunyu.http.core.cancelRequestError
 import me.chunyu.http.core.common.KotConstants
 import me.chunyu.http.core.interfaces.RequestExecutorContext
 import okhttp3.Call
@@ -15,6 +17,18 @@ abstract class OKContext(request: KotRequest) : RequestExecutorContext(request) 
     var call: Call? = null
 
     override fun cancel(forceCancel: Boolean): Boolean {
+        try {
+            if (forceCancel || request.canCancel()) {
+                isCancelled = true
+                future?.cancel(true)
+                call?.cancel()
+                request.deliverError(KotError.cancelRequestError())
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            request.deliverError(KotError(ex))
+        }
+
         return isCancelled
     }
 

@@ -34,3 +34,7 @@ fun RequestBuilder.asyncJson(callback: (TResponse<JsonElement>)->Unit) {
         }
     })
 }
+
+fun RequestBuilder.syncJson(): TResponse<JsonElement> {
+    return sync(object : TCallback<JsonElement>() { })
+}

@@ -9,6 +9,10 @@ import java.util.concurrent.Future
  */
 abstract class RequestExecutorContext(val request: KotRequest) {
     var future: Future<*>? = null
+
+    /**
+     * if isCancelled, asynchronous request may not be executed @{KotRequestRunnable}
+     */
     var isCancelled = false
 
     abstract fun execute(): KotResponse

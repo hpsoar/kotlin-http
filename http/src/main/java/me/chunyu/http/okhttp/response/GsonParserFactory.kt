@@ -1,12 +1,9 @@
 package me.chunyu.http.okhttp
 
 import com.google.gson.Gson
-import com.google.gson.TypeAdapter
 import com.google.gson.reflect.TypeToken
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import java.lang.reflect.Type
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by Roger Huang on 13/11/2017.

@@ -27,11 +27,7 @@ class OKDownloadContext(request: KotRequest) : OKContext(request) {
                     OkHttp.sOkHttpClient.newBuilder().addInterceptor { chain ->
                         val response: Response = chain.proceed(chain.request())
                         response.newBuilder()
-                                .body(ResponseProgressBody(response.body(), {
-                                    // progress callback
-                                    bytesDownloaded, totalBytes ->
-                                    request.updateDownloadProgress(Progress(bytesDownloaded, totalBytes))
-                                }))
+                                .body(ResponseProgressBody(response.body(), request.getDownloadProgressListener()))
                                 .build()
                     }?.build()
 
