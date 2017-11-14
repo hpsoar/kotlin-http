@@ -20,13 +20,16 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import com.google.gson.JsonElement
 import me.chunyu.http.KotHttp
 import me.chunyu.http.ObjectCallback
 import me.chunyu.http.async
 import me.chunyu.http.core.KotCallback
 import me.chunyu.http.core.KotError
 import me.chunyu.http.core.KotResponse
+import me.chunyu.http.core.request.TResponse
 import me.chunyu.http.okhttp.response.JSON
+import org.json.JSONObject
 import java.io.Serializable
 
 class GetApiTestActivity : AppCompatActivity() {
@@ -75,10 +78,14 @@ class GetApiTestActivity : AppCompatActivity() {
 
         val resp = JSON.toObject<Resp>(jsonStr, type)
 
-        print("hello")
+        val jsonObject = JSON.toObject<JsonElement>(jsonStr, object : ObjectCallback<JsonElement>(){}.getType())
     }
 
     fun getAsJSONObject(view: View) {
+        KotHttp.get("https://www.chunyuyisheng.com").async(object: ObjectCallback<Resp>() {
+            override fun onCallback(response: TResponse<Resp>) {
+            }
+        })
     }
 
     fun downloadImageFile(view: View) {

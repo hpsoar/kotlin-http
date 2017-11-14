@@ -1,9 +1,6 @@
 package me.chunyu.http
 
-import me.chunyu.http.core.KotCallback
-import me.chunyu.http.core.KotConvertor
-import me.chunyu.http.core.KotError
-import me.chunyu.http.core.KotResponse
+import me.chunyu.http.core.*
 import me.chunyu.http.core.builder.RequestBuilder
 import me.chunyu.http.core.request.TResponse
 import me.chunyu.http.okhttp.response.JSON
@@ -35,20 +32,22 @@ abstract class ObjectTypeInferer<T> {
 }
 
 abstract class ObjectCallback<T> : ObjectTypeInferer<T>() {
-    fun onCallback(response: TResponse<T>?, error: KotError?) {
-
+    open fun onCallback(response: TResponse<T>) {
     }
 }
 
 fun<T> RequestBuilder.async(callback: ObjectCallback<T>) {
     build().async(object : KotCallback {
         override fun onSuccess(response: KotResponse) {
-            val resp = ObjectConvertor<T>(callback.getType()).convertResponse(response)
-            callback.onCallback(resp, null)
+            val convertor = KotResponse.responseFactory!!.objectCovertor<T>(callback.getType())
+
+            val resp = convertor.convertResponse(response)
+
+            callback.onCallback(resp)
         }
 
         override fun onError(error: KotError) {
-            callback.onCallback(null, error)
+            callback.onCallback(TResponse(null, error))
         }
     })
 }

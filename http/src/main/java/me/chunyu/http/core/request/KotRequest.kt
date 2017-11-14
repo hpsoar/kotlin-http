@@ -5,6 +5,7 @@ import me.chunyu.http.core.common.Method
 import me.chunyu.http.core.common.Priority
 import me.chunyu.http.core.common.Progress
 import me.chunyu.http.core.interfaces.HttpClient
+import me.chunyu.http.core.interfaces.KotConvertorFactory
 import me.chunyu.http.core.interfaces.RequestExecutorContext
 import okhttp3.*
 import java.util.concurrent.Executor
