@@ -10,10 +10,10 @@ import java.lang.reflect.Type
  */
 class KotOkConvertorFactory : KotConvertorFactory {
     override fun <T> objectCovertor(type: Type): KotConvertor<T> {
-        return ObjectConvertor<T>(type)
+        return ObjectConvertor(type)
     }
 
-    override fun <T> stringConvertor(): KotConvertor<String> {
+    override fun stringConvertor(): KotConvertor<String> {
         return StringConvertor()
     }
 }

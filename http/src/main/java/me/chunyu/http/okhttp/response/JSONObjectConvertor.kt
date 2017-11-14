@@ -1,5 +1,6 @@
 package me.chunyu.http.okhttp.response
 
+import me.chunyu.http.core.KotConvertor
 import me.chunyu.http.core.KotError
 import me.chunyu.http.core.KotResponse
 import me.chunyu.http.core.request.TResponse
@@ -9,7 +10,7 @@ import org.json.JSONObject
 /**
  * Created by Roger Huang on 13/11/2017.
  */
-class JSONObjectConvertor {
+class JSONObjectConvertor : KotConvertor<JSONObject> {
     override fun convertResponse(response: KotResponse): TResponse<JSONObject> {
         val resp = ResponseConvertor().convertResponse(response)
         if (resp.data == null) {

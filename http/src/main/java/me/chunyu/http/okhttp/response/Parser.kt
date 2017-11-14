@@ -11,9 +11,6 @@ import java.lang.reflect.Type
 
 interface Parser<in F, out T> {
 
-    @Throws(IOException::class)
-    fun convert(value: F): T
-
     abstract class Factory {
 
         open fun getObject(string: String, type: Type): Any? {

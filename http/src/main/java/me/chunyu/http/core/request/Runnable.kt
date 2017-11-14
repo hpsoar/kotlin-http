@@ -24,8 +24,7 @@ open class Runnable(val request: KotRequest) : KotRunnable {
         } catch (ex: Exception) {
             ex.printStackTrace()
 
-            val error = KotUtils.getErrorForConnection(KotError(ex))
-            request.deliverError(error)
+            request.deliverError(KotError.connectionError())
         } finally {
 
         }

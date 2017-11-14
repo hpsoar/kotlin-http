@@ -12,43 +12,6 @@ import java.net.URLConnection
 class KotUtils private constructor() {
 
     companion object {
-
-        fun getErrorForConnection(kotError: KotError): KotError {
-            kotError.errorDetail = KotConstants.CONNECTION_ERROR
-            kotError.errorCode = 0
-            return kotError
-        }
-
-        fun parseNetworkError(kotError: KotError): KotError {
-//            try {
-//                val errorResponse: Response? = kotError.response
-//                kotError.errorBody = errorResponse?.let {
-//                    errorResponse.body()?.let {
-//                        errorResponse.body().source()?.let {
-//                            source ->
-//                            Okio.buffer(source).readUtf8()
-//                        }
-//                    }
-//                }
-//            } catch (ex: Exception) {
-//                ex.printStackTrace()
-//            }
-            return kotError
-        }
-
-        fun getErrorForServerResponse(kotError: KotError, kotRequest: KotRequest, code: Int): KotError {
-            val parsedKotError = parseNetworkError(kotError)
-            parsedKotError.errorDetail = KotConstants.RESPONSE_FROM_SERVER_ERROR
-            parsedKotError.errorCode = code
-            return parsedKotError
-        }
-
-        fun getErrorForParse(kotError: KotError): KotError {
-            kotError.errorCode = 0
-            kotError.errorDetail = KotConstants.PARSE_ERROR
-            return kotError
-        }
-
         fun getMimeType(path: String): String {
             val fileNameMap = URLConnection.getFileNameMap()
             var mimeType: String? = fileNameMap.getContentTypeFor(path)
@@ -76,9 +39,19 @@ fun<T> KotError.Companion.unsupported(t: T) : KotError {
     return error
 }
 
-inline fun<reified T> KotError.Companion.convertFailure(): KotError {
+inline fun<reified T> KotError.Companion.responseParseError(): KotError {
     val error = KotError()
     error.errorCode = -1
     error.errorDetail = "failed to convert response to:" + T::class
     return error
 }
+
+fun KotError.Companion.connectionError(): KotError {
+    val kotError = KotError()
+
+    kotError.errorDetail = KotConstants.CONNECTION_ERROR
+    kotError.errorCode = 0
+
+    return kotError
+}
+
