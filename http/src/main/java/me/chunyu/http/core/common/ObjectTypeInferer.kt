@@ -1,4 +1,4 @@
-package me.chunyu.http.core.request
+package me.chunyu.http.core.common
 
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type

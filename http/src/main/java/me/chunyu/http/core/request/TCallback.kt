@@ -1,5 +1,6 @@
 package me.chunyu.http.core.request
 
+import me.chunyu.http.core.common.ObjectTypeInferer
 import me.chunyu.http.core.common.Progress
 
 /**

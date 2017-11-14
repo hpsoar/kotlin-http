@@ -23,12 +23,12 @@ import android.view.View
 import com.google.gson.JsonElement
 import com.mindorks.sample.ApiEndPoint.Companion.GET_JSON_ARRAY
 import me.chunyu.http.KotHttp
-import me.chunyu.http.ObjectCallback
 import me.chunyu.http.async
 import me.chunyu.http.asyncJson
 import me.chunyu.http.core.KotCallback
 import me.chunyu.http.core.KotError
 import me.chunyu.http.core.KotResponse
+import me.chunyu.http.core.request.TCallback
 import me.chunyu.http.core.request.TResponse
 import me.chunyu.http.okhttp.response.JSON
 import org.json.JSONArray
@@ -77,7 +77,7 @@ class GetApiTestActivity : AppCompatActivity() {
         KotHttp.get(GET_JSON_ARRAY)
                 .addPathParameter("pageNumber", "0")
                 .addQueryParameter("limit", "3")
-                .async(object: ObjectCallback<JsonElement>() {
+                .async(object: TCallback<JsonElement>() {
             override fun onCallback(response: TResponse<JsonElement>) {
                 print("hello")
             }
@@ -91,7 +91,7 @@ class GetApiTestActivity : AppCompatActivity() {
     }
 
     fun getAsJSONObject(view: View) {
-        KotHttp.get("https://www.chunyuyisheng.com").async(object: ObjectCallback<Resp>() {
+        KotHttp.get("https://www.chunyuyisheng.com").async(object: TCallback<Resp>() {
             override fun onCallback(response: TResponse<Resp>) {
             }
         })
@@ -105,11 +105,11 @@ class GetApiTestActivity : AppCompatActivity() {
         val d = hashMapOf("success" to true, "user" to u)
         val jsonStr = JSON.toJSONString(d)
 
-        val type = object : ObjectCallback<Resp>() {}.getType()
+        val type = object : TCallback<Resp>() {}.getType()
 
         val resp = JSON.toObject<Resp>(jsonStr, type)
 
-        val jsonObject = JSON.toObject<JsonElement>(jsonStr, object : ObjectCallback<JsonElement>(){}.getType())
+        val jsonObject = JSON.toObject<JsonElement>(jsonStr, object : TCallback<JsonElement>(){}.getType())
     }
 
     fun sendAndCancelAll(view: View) {
