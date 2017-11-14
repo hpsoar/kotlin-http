@@ -22,7 +22,6 @@ abstract class OKContext(request: KotRequest) : RequestExecutorContext(request) 
                 isCancelled = true
                 future?.cancel(true)
                 call?.cancel()
-                request.deliverError(KotError.cancelRequestError())
             }
         } catch (ex: Exception) {
             ex.printStackTrace()

@@ -9,8 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger
  * Created by huangpeng on 12/11/2017.
  */
 class KotRequestQueue private constructor() {
-    val sequenceGenerator: AtomicInteger = AtomicInteger()
-    var currentRequest: MutableSet<KotRequest> = mutableSetOf()
+    private val sequenceGenerator: AtomicInteger = AtomicInteger()
+    private var currentRequest: MutableSet<KotRequest> = mutableSetOf()
 
     private object Holder {
         val INSTANCE = KotRequestQueue()
@@ -25,14 +25,17 @@ class KotRequestQueue private constructor() {
             try {
                 currentRequest.add(request)
             } catch (ex: Exception) {
+                request.deliverError(KotError(ex))
                 ex.printStackTrace()
             }
         }
 
         try {
+            // prepare for run
+
             request.sequenceNumber = getSequenceNumber()
 
-            request.context?.future = when (request.priority) {
+            request.requestExecutor?.future = when (request.priority) {
 
                 Priority.IMMEDIATE -> {
                     Core.instance
@@ -48,9 +51,9 @@ class KotRequestQueue private constructor() {
                             .submit(KotRequestRunnable(request))
                 }
             }
-
         } catch (ex: Exception) {
             ex.printStackTrace()
+            request.deliverError(KotError(ex))
         }
     }
 

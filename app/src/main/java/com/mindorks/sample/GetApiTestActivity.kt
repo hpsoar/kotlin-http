@@ -28,13 +28,9 @@ import me.chunyu.http.asyncJson
 import me.chunyu.http.core.KotCallback
 import me.chunyu.http.core.KotError
 import me.chunyu.http.core.KotResponse
-import me.chunyu.http.core.common.Progress
 import me.chunyu.http.core.request.TCallback
 import me.chunyu.http.core.request.TResponse
 import me.chunyu.http.okhttp.response.JSON
-import org.json.JSONArray
-import org.json.JSONObject
-import java.io.Serializable
 
 class GetApiTestActivity : AppCompatActivity() {
 

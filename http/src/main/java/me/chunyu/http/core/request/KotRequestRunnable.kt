@@ -12,7 +12,7 @@ open class KotRequestRunnable(val request: KotRequest) : KotRunnable {
     override val sequence: Int = request.sequenceNumber
 
     override fun run() {
-        val context = request.context
+        val context = request.requestExecutor
         if (context == null || context.isCancelled) {
             return
         }

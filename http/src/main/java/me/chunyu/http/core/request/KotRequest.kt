@@ -38,7 +38,7 @@ open class KotRequest(builder: RequestBuilder) {
 
     var executor: Executor? = null
 
-    var context: RequestExecutorContext? = null
+    var requestExecutor: RequestExecutorContext? = null
 
     private var callback: KotCallback? = null
 
@@ -72,13 +72,26 @@ open class KotRequest(builder: RequestBuilder) {
 
     }
 
+    /**
+     * if in an executable state
+     */
+    fun canExecute(): Boolean {
+        return requestExecutor?.let { !it.isCancelled } ?: false
+    }
+
+    /**
+     * this will be respected by request executor
+     */
     open fun canCancel(): Boolean {
         return true
     }
 
+    /**
+     * do cancel
+     */
     fun cancel(forceCancel: Boolean): Boolean {
-        context?.cancel(forceCancel)
-        return context?.isCancelled ?: true
+        requestExecutor?.cancel(forceCancel)
+        return requestExecutor?.isCancelled ?: true
     }
 
     fun async(callback: KotCallback?) {
@@ -87,7 +100,7 @@ open class KotRequest(builder: RequestBuilder) {
         val httpClient = currentHttpClient()
         if (httpClient != null) {
 
-            context = httpClient.executorContext(this)
+            requestExecutor = httpClient.executorContext(this)
 
             KotRequestQueue.INSTANCE.addRequest(this)
         } else {
@@ -96,8 +109,8 @@ open class KotRequest(builder: RequestBuilder) {
     }
 
     /**
-     * only uploadProgress/downloadProgress/onStart will be called
-     * do not call onSuccess, because the response may be processed twice
+     * only uploadProgress/downloadProgress/onStart/onFinish will be called
+     * do not call onSuccess or OnError, because the response may be processed twice
      */
     fun sync(callback: KotCallback?): KotResponse {
         val httpClient = currentHttpClient()
@@ -106,15 +119,19 @@ open class KotRequest(builder: RequestBuilder) {
 
             val context = httpClient.executorContext(this)
 
-            this.context = context
+            this.requestExecutor = context
 
-            val resp = return context.execute()
-
-            runCallback {
-                finish()
+            try {
+                return context.execute()
             }
-
-            return resp
+            catch (e: Exception) {
+                return KotResponse(KotError(e))
+            }
+            finally {
+                runCallback {
+                    finish()
+                }
+            }
         }
 
         return KotResponse(KotError.noHttpClientError())
@@ -139,10 +156,11 @@ open class KotRequest(builder: RequestBuilder) {
     }
 
     // MARK - update progress & deliver result
+    // NOTE: for any request finish should be called
 
     fun getUploadProgressListener(): ((Long, Long) -> Unit)? {
         return { bytesDownloaded: Long, totalBytes: Long ->
-            context?.let {
+            requestExecutor?.let {
                 if (!it.isCancelled) {
                     progress = Progress(bytesDownloaded, totalBytes)
 
@@ -156,7 +174,7 @@ open class KotRequest(builder: RequestBuilder) {
 
     fun getDownloadProgressListener(): ((Long, Long) -> Unit)? {
         return { bytesDownloaded: Long, totalBytes: Long ->
-            context?.let {
+            requestExecutor?.let {
                 if (!it.isCancelled) {
                     progress = Progress(bytesDownloaded, totalBytes)
 
@@ -172,6 +190,7 @@ open class KotRequest(builder: RequestBuilder) {
         runCallback {
             if (!isDelivered) {
                 callback?.onSuccess(response)
+
                 finish()
             }
         }
@@ -180,28 +199,38 @@ open class KotRequest(builder: RequestBuilder) {
     fun deliverError(error: KotError) {
         runCallback {
             if (!isDelivered) {
+
                 callback?.onError(error)
+
                 finish()
             }
         }
     }
 
+    /**
+     * every request should call this once and only once
+     */
     private fun finish() {
-        callback?.onFinish()
-        callback = null
-        isDelivered = true
+        if (!isDelivered) {
+            isDelivered = true
+
+            callback?.onFinish()
+            callback = null
+
+            requestExecutor = null
+
+            KotRequestQueue.INSTANCE.finish(this)
+        }
     }
 
+    /**
+     * to run upload/download progress callback & deliver response or error
+     */
     private fun runCallback(block: (Unit) -> Unit) {
-        try {
-            executor?.execute {
-                block(Unit)
-            } ?: Core.instance.executorSupplier.forMainThreadTasks().execute {
-                block(Unit)
-            }
-        }
-        catch (e: Exception) {
-
+        executor?.execute {
+            block(Unit)
+        } ?: Core.instance.executorSupplier.forMainThreadTasks().execute {
+            block(Unit)
         }
     }
 

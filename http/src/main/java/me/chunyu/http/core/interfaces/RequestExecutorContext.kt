@@ -2,6 +2,7 @@ package me.chunyu.http.core.interfaces
 
 import me.chunyu.http.core.KotRequest
 import me.chunyu.http.core.KotResponse
+import java.io.IOException
 import java.util.concurrent.Future
 
 /**
@@ -15,6 +16,7 @@ abstract class RequestExecutorContext(val request: KotRequest) {
      */
     var isCancelled = false
 
+    @Throws(IOException::class)
     abstract fun execute(): KotResponse
     
     abstract fun cancel(forceCancel: Boolean): Boolean
