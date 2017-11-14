@@ -14,6 +14,6 @@ open class KotResponse(var error: KotError?){
     }
 
     companion object {
-        var responseFactory: KotConvertorFactory? = null
+        var convertorFactory: KotConvertorFactory? = null
     }
 }

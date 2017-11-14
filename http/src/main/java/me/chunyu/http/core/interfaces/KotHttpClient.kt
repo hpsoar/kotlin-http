@@ -7,6 +7,6 @@ import me.chunyu.http.core.KotRequest
  *
  */
 
-interface HttpClient {
+interface KotHttpClient {
     fun executorContext(request: KotRequest): RequestExecutorContext
 }

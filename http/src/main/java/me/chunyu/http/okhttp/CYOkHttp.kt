@@ -1,9 +1,8 @@
 package me.chunyu.http.okhttp
 
-import android.net.TrafficStats
 import me.chunyu.http.core.*
 import me.chunyu.http.core.KotRequest
-import me.chunyu.http.core.interfaces.HttpClient
+import me.chunyu.http.core.interfaces.KotHttpClient
 import me.chunyu.http.core.interfaces.RequestExecutorContext
 import okhttp3.*
 import java.util.concurrent.TimeUnit
@@ -11,7 +10,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by huangpeng on 12/11/2017.
  */
-class CYOkHttp : HttpClient {
+class CYOkHttp : KotHttpClient {
     companion object {
         // you can customize in your code
         var sOkHttpClient: OkHttpClient = defaultOkHttpClient()

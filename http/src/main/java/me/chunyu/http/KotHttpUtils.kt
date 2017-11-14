@@ -23,6 +23,10 @@ fun<T> RequestBuilder.async(callback: TCallback<T>) {
     build().async(callback)
 }
 
+fun<T> RequestBuilder.sync(callback: TCallback<T>) : TResponse<T> {
+    return build().sync(callback)
+}
+
 fun RequestBuilder.asyncJson(callback: (TResponse<JsonElement>)->Unit) {
     async(object: TCallback<JsonElement>() {
         override fun onCallback(response: TResponse<JsonElement>) {

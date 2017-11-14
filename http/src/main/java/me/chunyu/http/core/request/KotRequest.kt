@@ -4,8 +4,7 @@ import me.chunyu.http.core.builder.RequestBuilder
 import me.chunyu.http.core.common.Method
 import me.chunyu.http.core.common.Priority
 import me.chunyu.http.core.common.Progress
-import me.chunyu.http.core.interfaces.HttpClient
-import me.chunyu.http.core.interfaces.KotConvertorFactory
+import me.chunyu.http.core.interfaces.KotHttpClient
 import me.chunyu.http.core.interfaces.RequestExecutorContext
 import me.chunyu.http.core.request.TCallback
 import me.chunyu.http.core.request.TResponse
@@ -18,7 +17,7 @@ import java.util.concurrent.Executor
 open class KotRequest(builder: RequestBuilder) {
 
     companion object {
-        var httpClient: HttpClient? = null
+        var httpClient: KotHttpClient? = null
     }
 
     val url: String
@@ -34,7 +33,7 @@ open class KotRequest(builder: RequestBuilder) {
     var cacheControl: CacheControl? = null
     var userAgent: String? = null
 
-    var httpClient: HttpClient? = null
+    var httpClient: KotHttpClient? = null
 
     var executor: Executor? = null
 
@@ -73,7 +72,7 @@ open class KotRequest(builder: RequestBuilder) {
         return context?.isCancelled ?: false
     }
 
-    fun currentHttpClient(): HttpClient? {
+    fun currentHttpClient(): KotHttpClient? {
         return httpClient ?: KotRequest.httpClient
     }
 
@@ -139,12 +138,13 @@ open class KotRequest(builder: RequestBuilder) {
     }
 
     fun<T> convertResponse(response: KotResponse, callback: TCallback<T>) : TResponse<T> {
-        // TODO: safty guard here
-        val convertor = KotResponse.responseFactory!!.objectCovertor<T>(callback.getType())
+        val convertor = KotResponse.convertorFactory?.objectCovertor<T>(callback.getType())
 
-        val resp = convertor.convertResponse(response)
+        if (convertor != null) {
+            return convertor.convertResponse(response)
+        }
 
-        return resp
+        return TResponse(response, KotError("please set KotResponse.convertorFactory"))
     }
 
     fun noHttpClientError(): KotError {

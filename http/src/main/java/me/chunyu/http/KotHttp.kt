@@ -13,8 +13,13 @@ class KotHttp {
     companion object {
         // NOTE: this is the only place that couples with okHttp
         fun initialize() {
-            KotRequest.httpClient = CYOkHttp()
-            KotResponse.responseFactory = KotOkConvertorFactory()
+            KotRequest.httpClient = CYOkHttp() // httpClient will delegate real request
+
+            /*
+             * convertorFactory is responsible to convert raw response (wrapped in KotResponse) to typed response TResponse<T>
+             * basically, you need to implement one for your httpClient
+             */
+            KotResponse.convertorFactory = KotOkConvertorFactory()
             // TODO: config okHttpClient
         }
 

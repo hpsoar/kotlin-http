@@ -4,7 +4,7 @@ import me.chunyu.http.core.KotRequest
 import me.chunyu.http.core.ParseUtil
 import me.chunyu.http.core.common.Priority
 import me.chunyu.http.core.common.Method
-import me.chunyu.http.core.interfaces.HttpClient
+import me.chunyu.http.core.interfaces.KotHttpClient
 import okhttp3.CacheControl
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
@@ -21,7 +21,7 @@ open class RequestBuilder(val url: String, val method: Method) {
     val pathParameterMap: MutableMap<String, String> = mutableMapOf()
     var cacheControl: CacheControl? = null
     var executor: Executor? = null
-    var httpClient: HttpClient? = null
+    var httpClient: KotHttpClient? = null
     var userAgent: String? = null
 
      fun setPriority(priority: Priority): RequestBuilder {
@@ -109,7 +109,7 @@ open class RequestBuilder(val url: String, val method: Method) {
         return this
     }
 
-     fun setHttpClient(httpClient: HttpClient): RequestBuilder {
+     fun setHttpClient(httpClient: KotHttpClient): RequestBuilder {
         this.httpClient = httpClient
         return this
     }
